@@ -19,6 +19,16 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.crypto.spec.SecretKeySpec;
+import javax.xml.bind.DatatypeConverter;
+import java.security.Key;
+import io.jsonwebtoken.*;
+
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.Claims;
+
+
+
 
 
 
@@ -46,8 +56,12 @@ public class UserController{
         user.setId(id);
         user.setDate(LocalDateTime.now());
 
+        if(user.getEmail() == null || user.getEmail() == "" || user.getPassowrd() == null|| user.getPassowrd() == "" || user.getUsername() == null || user.getUsername() == ""){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Fail to caraete user");
+        }
+
         if(userRepository.findByUsername(user.getUsername()) != null ||  userRepository.findByEmail(user.getEmail()) != null){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("User already exists");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Fail to caraete user");
         }
      
         String encryptedString = AES.encrypt(user.getPassowrd(), secretKey) ;
