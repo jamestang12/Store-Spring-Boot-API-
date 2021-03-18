@@ -43,10 +43,10 @@ public class Post{
     }
 
     public String getPostId(){
-        return this.getPostId();
+        return this.postid;
     }
 
-    public Double getProce(){
+    public Double getPrice(){
         return this.price;
     }
 
