@@ -59,7 +59,7 @@ public class AuthController{
         }
 
 
-        String token = createJWT(3600, userValue);
+        String token = createJWT(36000000, userValue);
 
         return new ResponseEntity<>(token,HttpStatus.OK);
     }
