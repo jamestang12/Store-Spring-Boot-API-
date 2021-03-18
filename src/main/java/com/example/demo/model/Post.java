@@ -2,7 +2,6 @@ package com.example.demo.model;
 
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import jdk.jfr.events.CertificateId;
 
 import org.springframework.data.annotation.Id;
 import java.time.LocalDateTime;
@@ -11,20 +10,20 @@ import java.time.LocalDateTime;
 @Document(collection = "Posts")
 public class Post{
 
-    private String postId;
+    private String postid;
     private Double price;
     private String title;
     private LocalDateTime date;
     private Double bud;
-    private Sting desc;
+    private String desc;
     private String budPerson;
     private String usernmae;
 
 
     public Post(){}
 
-    public Post(String postId, Double price, LocalDateTime date, Double bud,String title, String desc, String budPerson, String username){
-        this.postId = postId;
+    public Post(String postid, Double price, LocalDateTime date, Double bud,String title, String desc, String budPerson, String username){
+        this.postid = postid;
         this.price = price;
         this.title = title;
         this.date = date;
@@ -63,7 +62,7 @@ public class Post{
     }
 
      public void setPostId(String id){
-        this.postId = id;
+        this.postid = id;
     }
 
     public void setPrice(Double price){
