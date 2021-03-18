@@ -4,7 +4,10 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 
 import org.springframework.data.annotation.Id;
+
+import java.lang.reflect.Array;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 
 
 @Document(collection = "Posts")
@@ -18,11 +21,12 @@ public class Post{
     private String desc;
     private String budPerson;
     private String usernmae;
+    private ArrayList<String> images;
 
 
     public Post(){}
 
-    public Post(String postid, Double price, LocalDateTime date, Double bud,String title, String desc, String budPerson, String username){
+    public Post(String postid, Double price, LocalDateTime date, Double bud,String title, String desc, String budPerson, String username, ArrayList<String> images){
         this.postid = postid;
         this.price = price;
         this.title = title;
@@ -31,6 +35,11 @@ public class Post{
         this.desc = desc;
         this.budPerson = budPerson;
         this.usernmae = username;
+        this.images = images;
+    }
+
+    public ArrayList<String> getImages(){
+        return this.images;
     }
 
     public String getPostId(){
@@ -91,5 +100,9 @@ public class Post{
 
     public void setUsername(String username){
         this.usernmae = username;
+    }
+
+    public void setImages(ArrayList<String> images){
+        this.images = images;
     }
 }
