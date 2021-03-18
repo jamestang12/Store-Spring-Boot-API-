@@ -34,9 +34,6 @@ import io.jsonwebtoken.Claims;
 
 
 
-
-
-
 @RestController
 public class UserController{
 
@@ -75,11 +72,7 @@ public class UserController{
     //             .setSigningKey(DatatypeConverter.parseBase64Binary(key))
     //             .parseClaimsJws("eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJhNDI2NTk3NS03MTkzLTRkNjQtYWYxOC1hNmVmNTJjZjgxMGYiLCJpYXQiOjE2MTYwOTM1NjEsInN1YiI6IkxvZ2luIFRva2VuIiwiaXNzIjoiRGVtbyIsInVzZXJuYW1lIjoiamFtZXMiLCJlbWFpbCI6ImphbWVzQGdtYWlsLmNvbSIsImlkIjoiY2FkMzM1NDItMGU4My00Y2M1LTljY2UtNzA5YzVhY2I1ZWU5IiwiZXhwIjoxNjE2MTI5NTYxfQ.opfOrDbyqEIEMcw8B1WVy-oTuibb_jePdtFmYZ_1frg").getBody();
 
-    //     String val = claims.get("username").toString();
-
-
-    
-        
+    //     String val = claims.get("username").toString();        
         //return "s";
     }
 
