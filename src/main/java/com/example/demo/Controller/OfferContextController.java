@@ -28,7 +28,11 @@ import javax.swing.text.html.Option;
 import javax.xml.bind.DatatypeConverter;
 
 import com.example.demo.Encryption.AES;
+import com.example.demo.dao.OfferContextRepository;
+import com.example.demo.dao.OfferRepository;
 import com.example.demo.dao.PostRepository;
+import com.example.demo.model.Offer;
+import com.example.demo.model.OfferContext;
 import com.example.demo.model.Post;
 import com.example.demo.model.User;
 
@@ -53,8 +57,50 @@ public class OfferContextController{
     @Value("tokenKey")
     private String key;
 
+    @Autowired
+    public OfferContextRepository offerContextRepository;
 
-    
+    @Autowired
+    public OfferRepository offerRepository;
+
+    @PostMapping(value="/sendMessage")
+    @ResponseBody
+    public ResponseEntity sendMessage(@RequestHeader("token") String token, @RequestBody OfferContext offerContext){
+        
+        Optional<Offer> offer = offerRepository.findById(offerContext.getPostid());
+        Offer _offer ;
+        if(offer.isPresent()){
+            _offer = offer.get();
+        }else{
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Offer not found");
+        }
+
+        Claims claims;
+        try {
+            claims = decodeJWT(token);
+            if(! _offer.getSender().equals(claims.get("username").toString()) && ! _offer.getOwner().equals(claims.get("username").toString())){
+              
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Request fail");
+
+            }else{
+                offerContext.setId(UUID.randomUUID().toString());
+                offerContext.setDate(LocalDateTime.now());
+                offerContext.setSenderid(claims.get("username").toString());
+                if( _offer.getOwner().equals(claims.get("username").toString())){
+                    offerContext.setReceverid(_offer.getSender());
+                }else{
+                    offerContext.setReceverid(_offer.getOwner());
+                }
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Not authorized");
+        }
+
+
+        return ResponseEntity.ok(offerContextRepository.insert(offerContext));
+    }
+
+
 
 
     public Claims decodeJWT(String jwt){
