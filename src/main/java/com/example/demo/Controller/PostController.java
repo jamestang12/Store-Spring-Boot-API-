@@ -2,6 +2,7 @@ package com.example.demo.Controller;
 
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,6 +23,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import javax.crypto.spec.SecretKeySpec;
+import javax.swing.text.html.Option;
 import javax.xml.bind.DatatypeConverter;
 
 import com.example.demo.dao.PostRepository;
@@ -32,6 +34,7 @@ import java.security.Key;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import io.jsonwebtoken.*;
@@ -94,7 +97,7 @@ public class PostController{
         String id = UUID.randomUUID().toString();
         LocalDateTime date = LocalDateTime.now();
         post.setDate(date);
-        post.setPostId(id);
+        post.setid(id);
 
         Post insertedPost = postRepository.insert(post);
         return ResponseEntity.ok(insertedPost);
@@ -104,8 +107,8 @@ public class PostController{
 
     @GetMapping(value="/post/{id}")
     public ResponseEntity findPostById(@PathVariable("id") String id){
-        Post post = postRepository.findByPostid(id);
-        
+        // Post post = postRepository.findById(id);
+        Optional<Post> post = postRepository.findById(id);
         return ResponseEntity.ok(post);
     }
 
@@ -114,6 +117,34 @@ public class PostController{
        // List<Post> post = postRepository.findall();
         
         return ResponseEntity.ok(postRepository.findAll());
+    }
+
+    @PutMapping(value="/post/bid/{id}")
+    public ResponseEntity bidItem(@RequestHeader("token") String token,@RequestHeader String bid, @PathVariable("id") String id){
+        Claims claims;
+        try {
+            claims = decodeJWT(token);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Not authorized");
+        }
+
+        Optional<Post> post = postRepository.findById(id);
+        Post _post;
+        if(post.isPresent()){
+             _post = post.get();
+            if(_post.getUsername().equals(claims.get("username").toString()) || _post.getBud() >= Double.parseDouble(bid) ||_post.getPrice() >= Double.parseDouble(bid)){
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Request fail");
+            }
+             
+        }else{
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Not authorized");
+        }
+        
+        _post.setBud(Double.parseDouble(bid));        
+
+        postRepository.save(_post);
+
+        return ResponseEntity.ok(_post);
     }
     
 

@@ -9,5 +9,5 @@ import org.springframework.data.mongodb.repository.Query;
 public interface PostRepository extends MongoRepository<Post, String>{
 
 
-    Post findByPostid(String postid);
+    // Post findById(String postid);
 }

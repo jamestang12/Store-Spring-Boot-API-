@@ -13,7 +13,8 @@ import java.util.ArrayList;
 @Document(collection = "Posts")
 public class Post{
 
-    private String postid;
+    @Id
+    private String id;
     private Double price;
     private String title;
     private LocalDateTime date;
@@ -26,8 +27,8 @@ public class Post{
 
     public Post(){}
 
-    public Post(String postid, Double price, LocalDateTime date, Double bud,String title, String desc, String budPerson, String username, ArrayList<String> images){
-        this.postid = postid;
+    public Post(String id, Double price, LocalDateTime date, Double bud,String title, String desc, String budPerson, String username, ArrayList<String> images){
+        this.id = id;
         this.price = price;
         this.title = title;
         this.date = date;
@@ -42,8 +43,8 @@ public class Post{
         return this.images;
     }
 
-    public String getPostId(){
-        return this.postid;
+    public String getid(){
+        return this.id;
     }
 
     public Double getPrice(){
@@ -70,8 +71,12 @@ public class Post{
         return this.usernmae;
     }
 
-     public void setPostId(String id){
-        this.postid = id;
+    public Double getBud(){
+        return this.bud;
+    }
+
+     public void setid(String id){
+        this.id = id;
     }
 
     public void setPrice(Double price){
