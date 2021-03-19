@@ -27,6 +27,7 @@ import javax.crypto.spec.SecretKeySpec;
 import javax.swing.text.html.Option;
 import javax.xml.bind.DatatypeConverter;
 
+import com.example.demo.Encryption.AES;
 import com.example.demo.dao.PostRepository;
 import com.example.demo.model.Post;
 import com.example.demo.model.User;
@@ -101,13 +102,20 @@ public class PostController{
         return ResponseEntity.ok(postRepository.findAll());
     }
 
+    @GetMapping(value="/posts/{username}")
+    public ResponseEntity getPostsByUser(@PathVariable("username") String username){
+        List<Post> posts = postRepository.findByUsername(username);
+        return ResponseEntity.ok(posts);
+
+    }
+
     @PutMapping(value="/post/bid/{id}")
     public ResponseEntity bidItem(@RequestHeader("token") String token,@RequestHeader String bid, @PathVariable("id") String id){
         Claims claims;
         try {
             claims = decodeJWT(token);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Not authorized");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e);
         }
 
         Optional<Post> post = postRepository.findById(id);

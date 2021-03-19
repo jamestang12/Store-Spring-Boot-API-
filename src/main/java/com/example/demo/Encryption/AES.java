@@ -5,15 +5,21 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.Base64;
+import org.springframework.beans.factory.annotation.Value;
+
  
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
+
+
 
 
 public class AES {
  
     private static SecretKeySpec secretKey;
     private static byte[] key;
+
+    
  
     public static void setKey(String myKey) 
     {
@@ -64,4 +70,9 @@ public class AES {
         }
         return null;
     }
+
+
+
+
+    
 }

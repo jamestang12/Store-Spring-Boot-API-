@@ -21,7 +21,7 @@ public class Post{
     private Double bud;
     private String desc;
     private String budPerson;
-    private String usernmae;
+    private String username;
     private ArrayList<String> images;
     private String location;
 
@@ -36,7 +36,7 @@ public class Post{
         this.bud = bud;
         this.desc = desc;
         this.budPerson = budPerson;
-        this.usernmae = username;
+        this.username = username;
         this.images = images;
         this.location = location;
     }
@@ -74,7 +74,7 @@ public class Post{
     }
 
     public String getUsername(){
-        return this.usernmae;
+        return this.username;
     }
 
     public Double getBud(){
@@ -110,7 +110,7 @@ public class Post{
     }
 
     public void setUsername(String username){
-        this.usernmae = username;
+        this.username = username;
     }
 
     public void setLocation(String location){
