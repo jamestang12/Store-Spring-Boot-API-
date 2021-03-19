@@ -15,7 +15,6 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.http.MediaType;
 
 import javax.crypto.spec.SecretKeySpec;
-import javax.swing.text.html.Option;
 import javax.xml.bind.DatatypeConverter;
 
 import com.example.demo.dao.OfferRepository;
@@ -82,6 +81,58 @@ public class OfferController{
         
         return ResponseEntity.ok(offerRepository.insert(offer));
     }
+
+    @GetMapping(value="/offer/{id}")
+    public ResponseEntity findOfferById(@PathVariable("id") String id,@RequestHeader("token") String token){
+        Optional<Offer> offer = offerRepository.findById(id);
+        if(!offer.isPresent()){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Offer not found");
+        }
+
+        Offer _offer = offer.get();
+
+        Claims claims;
+        try {
+            claims = decodeJWT(token);
+            
+                if( _offer.getOwner().equals(claims.get("username").toString()) || _offer.getSender().equals(claims.get("username").toString())){
+                    
+                    return ResponseEntity.ok(_offer);
+                }else{
+                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Not authorized");
+                }
+            
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Not authorized");
+        }
+
+
+    }
+
+    @GetMapping(value="/offer/postid/{id}")
+    public ResponseEntity findOfferBypostId(@PathVariable("id") String id,@RequestHeader("token") String token){
+        List<Offer> offer = offerRepository.findByPostid(id);
+        if(offer == null){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Offer not found");
+        }
+
+        Claims claims;
+        try {
+            claims = decodeJWT(token);
+            
+                if( offer.get(0).getOwner().equals(claims.get("username").toString()) ){
+                    
+                    return ResponseEntity.ok(offer);
+                }else{
+                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Not authorized");
+                }
+            
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Not authorized");
+        }
+    }
+
+
 
     public Claims decodeJWT(String jwt){
         Claims claims = Jwts.parser()
