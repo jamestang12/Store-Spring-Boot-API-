@@ -120,7 +120,8 @@ public class PostController{
         }else{
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Not authorized");
         }
-        _post.setBud(Double.parseDouble(bid));        
+        _post.setBud(Double.parseDouble(bid));     
+        _post.setBudPerson(claims.get("username").toString());   
 
         postRepository.save(_post);
 
@@ -176,6 +177,46 @@ public class PostController{
         }
 
     }
+
+
+    @PutMapping(value="/post/info/{id}")
+    @ResponseBody
+    public ResponseEntity updatePostInfo(@RequestHeader("token") String token, @PathVariable("id") String id, @RequestBody Post postInfo){
+        Claims claims;
+        try {
+            claims = decodeJWT(token);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Not authorized");
+        }
+
+
+        Optional<Post> post = postRepository.findById(id);
+        Post _post;
+        if(post.isPresent()){
+             _post = post.get();  
+             if(! _post.getUsername().equals(claims.get("username").toString())){
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Not authorized");
+             }
+             if(postInfo.getTitle() != null && postInfo.getTitle() != ""){
+                _post.setTitle(postInfo.getTitle());
+             }
+             if(postInfo.getPrice() != null && postInfo.getPrice() >= 0){
+                 _post.setPrice(postInfo.getPrice());
+             }
+             _post.setLocation(postInfo.getLocation());
+             _post.setDesc(postInfo.getDesc());
+
+             postRepository.save(_post);
+
+        }else{
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Post not found");
+        }
+       
+
+        return ResponseEntity.ok(_post);
+    }
+
+
     
 
 

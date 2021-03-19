@@ -23,11 +23,12 @@ public class Post{
     private String budPerson;
     private String usernmae;
     private ArrayList<String> images;
+    private String location;
 
 
     public Post(){}
 
-    public Post(String id, Double price, LocalDateTime date, Double bud,String title, String desc, String budPerson, String username, ArrayList<String> images){
+    public Post(String location,String id, Double price, LocalDateTime date, Double bud,String title, String desc, String budPerson, String username, ArrayList<String> images){
         this.id = id;
         this.price = price;
         this.title = title;
@@ -37,10 +38,15 @@ public class Post{
         this.budPerson = budPerson;
         this.usernmae = username;
         this.images = images;
+        this.location = location;
     }
 
     public ArrayList<String> getImages(){
         return this.images;
+    }
+
+    public String getLocation(){
+        return this.location;
     }
 
     public String getid(){
@@ -105,6 +111,10 @@ public class Post{
 
     public void setUsername(String username){
         this.usernmae = username;
+    }
+
+    public void setLocation(String location){
+        this.location = location;
     }
 
     public void setImages(ArrayList<String> images){
