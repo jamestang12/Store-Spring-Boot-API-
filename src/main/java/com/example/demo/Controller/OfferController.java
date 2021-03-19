@@ -73,6 +73,10 @@ public class OfferController{
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Not authorized");
         }
+        List<Offer> offers = offerRepository.findBySender(claims.get("username").toString());
+        if(offers != null){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Request fail");
+        }
 
         String id = UUID.randomUUID().toString();
         offer.setId(id);
@@ -131,6 +135,68 @@ public class OfferController{
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Not authorized");
         }
     }
+
+    @GetMapping(value="/offer/owner")
+    public ResponseEntity findOfferByOwner(@RequestHeader("token") String token){
+        
+        Claims claims;
+        try {
+            claims = decodeJWT(token);
+                List<Offer> offer = offerRepository.findByOwner(claims.get("username").toString());
+                if(offer == null){
+                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Offer not found");
+                }
+                return ResponseEntity.ok(offer);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Not authorized");
+        }
+    }
+
+
+    @GetMapping(value="/offer/sender")
+    public ResponseEntity findOfferBySender(@RequestHeader("token") String token){
+        
+        Claims claims;
+        try {
+            claims = decodeJWT(token);
+                List<Offer> offer = offerRepository.findBySender(claims.get("username").toString());
+                if(offer == null){
+                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Offer not found");
+                }
+                return ResponseEntity.ok(offer);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Not authorized");
+        }
+    }
+
+    @DeleteMapping("/offer/{id}")
+    public ResponseEntity deleteOffer(@RequestHeader("token") String token, @PathVariable("id") String id){
+        Optional<Offer> offer = offerRepository.findById(id);
+        Offer _offer;
+        if(offer.isPresent()){
+            _offer = offer.get();
+        }else{
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Offer not found");
+        }
+        Claims claims;
+
+        try {
+            claims = decodeJWT(token);
+            if(! _offer.getSender().equals(claims.get("username").toString())){
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Not authorized");
+            }
+            offerRepository.deleteById(id);
+            return ResponseEntity.ok("Offer have been removed");
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Not authorized");
+        }
+
+    }
+
+
+
+    
 
 
 

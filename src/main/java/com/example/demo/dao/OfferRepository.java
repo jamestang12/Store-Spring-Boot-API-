@@ -12,5 +12,8 @@ import org.springframework.data.mongodb.repository.Query;
 
 public interface OfferRepository extends MongoRepository<Offer, String>{
     List<Offer> findByPostid(String id);
+    List<Offer> findByOwner(String id);
+    List<Offer> findBySender(String id);
+
 }
 
