@@ -3,7 +3,7 @@ package com.example.demo.model;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDate;
-
+import java.time.LocalDateTime;
 
 import org.springframework.data.annotation.Id;
 
@@ -16,13 +16,13 @@ public class Offer{
     private String postid;
     private String sender;
     private String owner;
-    private LocalDate date;
+    private LocalDateTime date;
     private String text;
 
 
     public Offer(){}
 
-    public Offer(String id, String postid, String sender, String owner, LocalDate date, String text){
+    public Offer(String id, String postid, String sender, String owner, LocalDateTime date, String text){
         this.id = id;
         this.postid = postid;
         this.sender = sender;
@@ -51,7 +51,7 @@ public class Offer{
         return this.owner;
     }
 
-    public LocalDate getDate(){
+    public LocalDateTime getDate(){
         return this.date;
     }
 
@@ -71,7 +71,7 @@ public class Offer{
         this.owner = owner;
     }
 
-    public void setdate(LocalDate date){
+    public void setdate(LocalDateTime date){
         this.date = date;
     }
 
