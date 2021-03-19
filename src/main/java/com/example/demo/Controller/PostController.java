@@ -32,6 +32,7 @@ import com.example.demo.model.User;
 
 import java.security.Key;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -57,26 +58,6 @@ public class PostController{
     @GetMapping(value="/postTesting")
     public String test(){
         return "testing";
-    }
-
-    @PostMapping(value="/uploadImage",consumes = MediaType.MULTIPART_FORM_DATA_VALUE  )
-    public ResponseEntity uploadImage(@RequestParam("file") MultipartFile file, @RequestHeader("token") String token) throws IOException{
-        if(file.isEmpty() || file == null){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("File empty");
-        }
-        
-
-        try {
-            File convertFile = new File(uploadFolder + file.getOriginalFilename());
-            convertFile.createNewFile();
-            FileOutputStream fout = new FileOutputStream(convertFile);
-            fout.write(file.getBytes());
-            fout.close();
-            return ResponseEntity.ok(token);
-        } catch (Exception e) {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e);
-        }
-
     }
 
 
@@ -139,12 +120,61 @@ public class PostController{
         }else{
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Not authorized");
         }
-        
         _post.setBud(Double.parseDouble(bid));        
 
         postRepository.save(_post);
 
         return ResponseEntity.ok(_post);
+    }
+
+    @PutMapping(value="/post/uploadImage/{id}",consumes = MediaType.MULTIPART_FORM_DATA_VALUE  )
+    public ResponseEntity uploadImage(@RequestParam("file") MultipartFile file, @RequestHeader("token") String token, @PathVariable("id") String id) throws IOException{
+        if(file.isEmpty() || file == null){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("File empty");
+        }
+
+        Optional<Post> post = postRepository.findById(id);
+        Post _post;
+        if(post.isPresent()){
+            _post = post.get();
+        }else{
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Post not found");
+        }
+        
+        Claims claims;
+        try {
+            claims = decodeJWT(token);
+            if(! _post.getUsername().equals(claims.get("username").toString())){
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Not authorized");
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Not authorized");
+        }
+
+        try {
+            File convertFile = new File(uploadFolder + id + "_" +file.getOriginalFilename());
+            convertFile.createNewFile();
+            FileOutputStream fout = new FileOutputStream(convertFile);
+            fout.write(file.getBytes());
+            fout.close();
+
+            if(_post.getImages() == null){
+                ArrayList<String> list=new ArrayList<String>();  
+                list.add(uploadFolder + id + "_" +file.getOriginalFilename());
+                _post.setImages(list);
+                postRepository.save(_post);
+            }else{
+                ArrayList<String> list = _post.getImages();
+                list.add(uploadFolder + id + "_" +file.getOriginalFilename());
+                _post.setImages(list);
+                postRepository.save(_post);
+            }
+
+            return ResponseEntity.ok(_post);
+        } catch (Exception e) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e);
+        }
+
     }
     
 
