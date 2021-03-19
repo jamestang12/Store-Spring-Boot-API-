@@ -3,6 +3,7 @@ package com.example.demo.Controller;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -216,9 +217,29 @@ public class PostController{
         return ResponseEntity.ok(_post);
     }
 
+    @DeleteMapping("/post/{id}")
+    public ResponseEntity deledePost(@RequestHeader("token") String token, @PathVariable("id") String id){
+        Claims claims;
 
-    
+        Optional<Post> post = postRepository.findById(id);
+        Post _post;
+        if(post.isPresent()){
+            _post = post.get();
+        }else{
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Post not found");
+        }
+        try {
+            claims = decodeJWT(token);
+            if(! _post.getUsername().equals(claims.get("username").toString())){
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Not authorized");
+            }
+            postRepository.deleteById(id);
+            return ResponseEntity.ok("Post have been removed");
 
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Not authorized");
+        }
+    }
 
     public Claims decodeJWT(String jwt){
         Claims claims = Jwts.parser()
