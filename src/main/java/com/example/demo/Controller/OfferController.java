@@ -47,6 +47,10 @@ public class OfferController{
     @Autowired
     public PostRepository postRepository;
 
+
+    //@route   POST /makeOffer
+    //@desc    Making offer for a post and require a jwt token and Offer object
+    //@access  Private
     @PostMapping(value="/makeOffer")
     @ResponseBody
     public ResponseEntity makeOffer(@RequestHeader("token") String token, @RequestBody Offer offer){
@@ -84,6 +88,10 @@ public class OfferController{
         return ResponseEntity.ok(offerRepository.insert(offer));
     }
 
+
+    //@route   GET /offer/{id}
+    //@desc    Get offer by offer id with a jwt token
+    //@access  Private
     @GetMapping(value="/offer/{id}")
     public ResponseEntity findOfferById(@PathVariable("id") String id,@RequestHeader("token") String token){
         Optional<Offer> offer = offerRepository.findById(id);
@@ -111,6 +119,9 @@ public class OfferController{
 
     }
 
+    //@route   GET /offer/postid/{id}
+    //@desc    Get a list offer by post id, this is use for the post own to check their offer
+    //@access  Private
     @GetMapping(value="/offer/postid/{id}")
     public ResponseEntity findOfferBypostId(@PathVariable("id") String id,@RequestHeader("token") String token){
         List<Offer> offer = offerRepository.findByPostid(id);
@@ -134,6 +145,9 @@ public class OfferController{
         }
     }
 
+    //@route   GET /offer/owner
+    //@desc    Get a list of offer by post owner
+    //@access  Private
     @GetMapping(value="/offer/owner")
     public ResponseEntity findOfferByOwner(@RequestHeader("token") String token){
         
@@ -151,6 +165,9 @@ public class OfferController{
     }
 
 
+    //@route   GET /offer/sender
+    //@desc    Get a list of offer by offer sender
+    //@access  Private
     @GetMapping(value="/offer/sender")
     public ResponseEntity findOfferBySender(@RequestHeader("token") String token){
         
@@ -167,6 +184,10 @@ public class OfferController{
         }
     }
 
+
+    //@route   DELETE /offer/{id}
+    //@desc    Delete a offer by sender
+    //@access  Private
     @DeleteMapping("/offer/{id}")
     public ResponseEntity deleteOffer(@RequestHeader("token") String token, @PathVariable("id") String id){
         Optional<Offer> offer = offerRepository.findById(id);
@@ -195,9 +216,6 @@ public class OfferController{
 
 
     
-
-
-
     public Claims decodeJWT(String jwt){
         Claims claims = Jwts.parser()
         .setSigningKey(DatatypeConverter.parseBase64Binary(key))

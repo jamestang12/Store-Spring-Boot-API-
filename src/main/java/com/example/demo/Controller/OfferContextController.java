@@ -62,7 +62,11 @@ public class OfferContextController{
 
     @Autowired
     public OfferRepository offerRepository;
-
+    
+    
+    //@route   POST /sendMessage
+    //@desc    Send message btw user with jwt token and text context
+    //@access  Private
     @PostMapping(value="/sendMessage")
     @ResponseBody
     public ResponseEntity sendMessage(@RequestHeader("token") String token, @RequestBody OfferContext offerContext){
@@ -102,6 +106,10 @@ public class OfferContextController{
     }
     
 
+
+    //@route   GET /offer/messages/{id}
+    //@desc    Get offer messages by offer id with user token
+    //@access  Private
     @GetMapping(value="/offer/messages/{id}")
     public ResponseEntity getOfferMessages(@PathVariable("id") String id,@RequestHeader("token") String token){
         Claims claims;

@@ -43,7 +43,9 @@ public class AuthController{
     @Autowired
     public UserRepository userRepository;
 
-
+    //@route   POST /login
+    //@desc    Login user and return with a jwt token
+    //@access  Public
     @PostMapping(value="/login")
     @ResponseBody
     public ResponseEntity login(@RequestBody User user){
@@ -65,6 +67,7 @@ public class AuthController{
     }
 
 
+    //Create jwt token with user class and expire long
     public String createJWT(long ttlMillis, User user){
 
         SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;

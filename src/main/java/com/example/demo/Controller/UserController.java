@@ -47,6 +47,10 @@ public class UserController{
     @Autowired
     public UserRepository userRepository;
 
+
+    //@route   GET /user/{username}
+    //@desc    Get user by user name
+    //@access  Public
     @GetMapping(value="/user/{username}")
     public User getUserById(@PathVariable("username") String username){
         User user = userRepository.findByUsername(username);
@@ -54,6 +58,9 @@ public class UserController{
         return returnValue;
     }
 
+    //@route   GET /testing
+    //@desc    Testing route
+    //@access  Private
     @GetMapping(value="/testing")
     public ResponseEntity testToken(@RequestHeader("token") String token){
         // User user = userRepository.findByUsername(username);
@@ -76,6 +83,9 @@ public class UserController{
         //return "s";
     }
 
+    //@route   GET /createUser
+    //@desc    Create new user
+    //@access  Public
     @PostMapping(value="/createUser")
     @ResponseBody
     public ResponseEntity createUser(@RequestBody User user){

@@ -63,6 +63,9 @@ public class PostController{
     }
 
 
+    //@route   POST /create
+    //@desc    Create new post
+    //@access  Private
     @PostMapping(value="/createPost")
     @ResponseBody
     public ResponseEntity createPost(@RequestHeader("token") String token, @RequestBody Post post){
@@ -87,7 +90,9 @@ public class PostController{
 
     }
 
-
+    //@route   GET /post/{id}
+    //@desc    Get post by post id
+    //@access  Public
     @GetMapping(value="/post/{id}")
     public ResponseEntity findPostById(@PathVariable("id") String id){
         // Post post = postRepository.findById(id);
@@ -95,6 +100,9 @@ public class PostController{
         return ResponseEntity.ok(post);
     }
 
+    //@route   GET /posts
+    //@desc    Get all the posts
+    //@access  Public
     @GetMapping(value="/posts")
     public ResponseEntity findPostById(){
        // List<Post> post = postRepository.findall();
@@ -102,13 +110,18 @@ public class PostController{
         return ResponseEntity.ok(postRepository.findAll());
     }
 
+    //@route   GET /posts/{username}
+    //@desc    Get all the posts from a user by the username
+    //@access  Public
     @GetMapping(value="/posts/{username}")
     public ResponseEntity getPostsByUser(@PathVariable("username") String username){
         List<Post> posts = postRepository.findByUsername(username);
         return ResponseEntity.ok(posts);
-
     }
 
+    //@route   PUT /posts/bid/{id}
+    //@desc    Send a bid for the post by post id
+    //@access  Private
     @PutMapping(value="/post/bid/{id}")
     public ResponseEntity bidItem(@RequestHeader("token") String token,@RequestHeader String bid, @PathVariable("id") String id){
         Claims claims;
@@ -137,6 +150,9 @@ public class PostController{
         return ResponseEntity.ok(_post);
     }
 
+    //@route   PUT /post/uploadImage/{id}
+    //@desc    Upload image to post
+    //@access  Private
     @PutMapping(value="/post/uploadImage/{id}",consumes = MediaType.MULTIPART_FORM_DATA_VALUE  )
     public ResponseEntity uploadImage(@RequestParam("file") MultipartFile file, @RequestHeader("token") String token, @PathVariable("id") String id) throws IOException{
         if(file.isEmpty() || file == null){
@@ -187,7 +203,9 @@ public class PostController{
 
     }
 
-
+    //@route   PUT /post/info/{id}
+    //@desc    Update post info
+    //@access  Private
     @PutMapping(value="/post/info/{id}")
     @ResponseBody
     public ResponseEntity updatePostInfo(@RequestHeader("token") String token, @PathVariable("id") String id, @RequestBody Post postInfo){
@@ -225,6 +243,9 @@ public class PostController{
         return ResponseEntity.ok(_post);
     }
 
+    //@route   DELETE /post/{id}
+    //@desc    Delete a post by post id
+    //@access  Private
     @DeleteMapping("/post/{id}")
     public ResponseEntity deledePost(@RequestHeader("token") String token, @PathVariable("id") String id){
         Claims claims;
