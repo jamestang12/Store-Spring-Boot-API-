@@ -82,6 +82,7 @@ public class OfferContextController{
               
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Request fail");
 
+
             }else{
                 offerContext.setId(UUID.randomUUID().toString());
                 offerContext.setDate(LocalDateTime.now());
@@ -99,8 +100,30 @@ public class OfferContextController{
 
         return ResponseEntity.ok(offerContextRepository.insert(offerContext));
     }
+    
 
+    @GetMapping(value="/offer/messages/{id}")
+    public ResponseEntity getOfferMessages(@PathVariable("id") String id,@RequestHeader("token") String token){
+        Claims claims;
+        try {
+            claims = decodeJWT(token);
+            List<OfferContext> offerMessages = offerContextRepository.findByPostid(id);
+            if(offerMessages.size() == 0){
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Context not found");    
+            }
+            if(! offerMessages.get(0).getReceverid().equals(claims.get("username").toString()) && ! offerMessages.get(0).getSenderid().equals(claims.get("username").toString())){
+              
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Request fail");
 
+            }else{
+                return ResponseEntity.ok(offerMessages);
+            }
+            
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Not authorized");
+        }
+
+    }
 
 
     public Claims decodeJWT(String jwt){

@@ -67,7 +67,7 @@ public class Offer{
         this.sender = sender;
     }
 
-    public void sentOwner(String owner){
+    public void setOwner(String owner){
         this.owner = owner;
     }
 

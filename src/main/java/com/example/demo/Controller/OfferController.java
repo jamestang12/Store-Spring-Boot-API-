@@ -51,11 +51,6 @@ public class OfferController{
     @ResponseBody
     public ResponseEntity makeOffer(@RequestHeader("token") String token, @RequestBody Offer offer){
 
-    
-
-        if(offer.getSender() == "" || offer.getSender() == null || offer.getOwner() == "" || offer.getOwner() == null || offer.getText() == null || offer.getText() == ""){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Request fail");
-        }
 
         Optional<Post> post = postRepository.findById(offer.getPostid());
         
@@ -74,15 +69,18 @@ public class OfferController{
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Not authorized");
         }
         List<Offer> offers = offerRepository.findBySender(claims.get("username").toString());
-        if(offers != null){
+        if(offers.size() != 0){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Request fail");
         }
 
         String id = UUID.randomUUID().toString();
         offer.setId(id);
         offer.setdate(LocalDateTime.now());
+        offer.setSender(claims.get("username").toString());
+        offer.setOwner(_post.getUsername());
 
         
+        // return ResponseEntity.ok(offerRepository.insert(offer));
         return ResponseEntity.ok(offerRepository.insert(offer));
     }
 
@@ -116,7 +114,7 @@ public class OfferController{
     @GetMapping(value="/offer/postid/{id}")
     public ResponseEntity findOfferBypostId(@PathVariable("id") String id,@RequestHeader("token") String token){
         List<Offer> offer = offerRepository.findByPostid(id);
-        if(offer == null){
+        if(offer.size() == 0){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Offer not found");
         }
 
@@ -143,7 +141,7 @@ public class OfferController{
         try {
             claims = decodeJWT(token);
                 List<Offer> offer = offerRepository.findByOwner(claims.get("username").toString());
-                if(offer == null){
+                if(offer.size() == 0){
                     return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Offer not found");
                 }
                 return ResponseEntity.ok(offer);
